@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Post — Doug's Coffee Discovery</title>
+<style>
+  :root {
+    --black: #171210;
+    --dark-brown: #2b1d15;
+    --brown: #4a3226;
+    --light-brown: #8a6a52;
+    --cream: #f3e7d9;
+    --orange: #e87b26;
+    --orange-bright: #ff9c3f;
+    --tan: #d9c3a5;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--tan);
+    color: var(--dark-brown);
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(180deg, var(--dark-brown), var(--black));
+    border-bottom: 3px solid var(--orange);
+    padding: 28px 20px;
+    text-align: center;
+  }
+  header h1 { color: var(--orange-bright); font-size: 1.8rem; }
+  header a { color: var(--cream); font-family: Arial, sans-serif; font-size: 0.9rem; }
+
+  main { max-width: 640px; margin: 0 auto; padding: 30px 20px 60px; }
+
+  .panel {
+    background: var(--dark-brown);
+    color: var(--cream);
+    border: 1px solid var(--brown);
+    border-radius: 12px;
+    padding: 26px 28px;
+    margin-bottom: 20px;
+  }
+  .panel h2 { color: var(--orange); margin-bottom: 12px; font-size: 1.4rem; }
+  .panel p, .panel li { font-size: 0.95rem; }
+  .panel ol { margin: 10px 0 14px 22px; }
+  .panel a { color: var(--orange-bright); }
+  .hidden { display: none; }
+
+  label {
+    display: block;
+    font-family: Arial, sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--light-brown);
+    margin: 16px 0 5px;
+  }
+  input[type=text], input[type=password], input[type=url], textarea, select {
+    width: 100%;
+    background: var(--black);
+    color: var(--cream);
+    border: 1px solid var(--brown);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: Georgia, serif;
+    font-size: 1rem;
+  }
+  input:focus, textarea:focus, select:focus { outline: 2px solid var(--orange); }
+  textarea { min-height: 90px; resize: vertical; }
+
+  .btn {
+    display: inline-block;
+    background: var(--orange);
+    color: var(--black);
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    border-radius: 24px;
+    padding: 11px 26px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: var(--orange-bright); }
+  .btn:disabled { background: var(--light-brown); cursor: wait; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid var(--brown);
+    margin-right: 10px;
+  }
+
+  /* Post type cards */
+  .type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; }
+  .type-card {
+    background: var(--black);
+    border: 2px solid var(--brown);
+    border-radius: 12px;
+    padding: 22px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .type-card:hover { border-color: var(--orange); transform: translateY(-3px); }
+  .type-card .emoji { font-size: 2rem; display: block; margin-bottom: 8px; }
+  .type-card .name { color: var(--orange-bright); font-weight: bold; }
+  .type-card .desc { font-size: 0.8rem; color: var(--light-brown); font-family: Arial, sans-serif; }
+
+  /* Stars */
+  .star-picker { font-size: 1.9rem; cursor: pointer; user-select: none; margin-top: 4px; }
+  .star-picker span { color: var(--light-brown); transition: color 0.15s; }
+  .star-picker span.on { color: var(--orange-bright); }
+
+  .msg {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    font-size: 0.9rem;
+  }
+  .msg.ok { background: #1d3320; color: #a9e2ad; }
+  .msg.err { background: #3a1a15; color: #f2a091; }
+
+  .settings-link {
+    font-family: Arial, sans-serif;
+    font-size: 0.8rem;
+    text-align: right;
+    margin-bottom: 10px;
+  }
+  .settings-link a { color: var(--brown); cursor: pointer; text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>&#9749; New Post</h1>
+  <a href="index.html">&larr; Back to Doug's Coffee Discovery</a>
+</header>
+
+<main>
+
+  <!-- ================= SETUP ================= -->
+  <div class="panel hidden" id="setup">
+    <h2>One-time setup</h2>
+    <p>To publish posts, this page needs permission to update the site. You'll create a free "token" on GitHub — it's like a key that only works for this blog.</p>
+    <ol>
+      <li>Make sure you're signed in to a GitHub account that has access to this blog's repository.</li>
+      <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank">github.com/settings/personal-access-tokens/new</a></li>
+      <li>Token name: <strong>coffee-blog</strong>. Expiration: pick 1 year.</li>
+      <li>Repository access: choose <strong>Only select repositories</strong> &rarr; select <strong>numenuke.github.io</strong>.</li>
+      <li>Permissions &rarr; Repository permissions &rarr; <strong>Contents</strong> &rarr; set to <strong>Read and write</strong>.</li>
+      <li>Click <strong>Generate token</strong> and copy it (starts with <code>github_pat_</code>).</li>
+    </ol>
+    <label>Your name (shown on posts, optional)</label>
+    <input type="text" id="authorName" placeholder="e.g. Doug">
+    <label>Paste your token</label>
+    <input type="password" id="tokenInput" placeholder="github_pat_...">
+    <button class="btn" onclick="saveSetup()">Save & Start Posting</button>
+    <div id="setupMsg"></div>
+    <p style="margin-top:14px; font-size:0.8rem; color:var(--light-brown); font-family:Arial,sans-serif;">Your token is saved only in this browser, on this device. Each person posts from their own device with their own token.</p>
+  </div>
+
+  <!-- ================= CHOOSE TYPE ================= -->
+  <div class="panel hidden" id="chooser">
+    <div class="settings-link"><a onclick="showSetup()">token settings</a></div>
+    <h2>What are you posting?</h2>
+    <div class="type-grid">
+      <div class="type-card" onclick="showForm('video')">
+        <span class="emoji">&#127909;</span>
+        <span class="name">Video</span><br>
+        <span class="desc">A YouTube video</span>
+      </div>
+      <div class="type-card" onclick="showForm('review')">
+        <span class="emoji">&#9749;</span>
+        <span class="name">Review</span><br>
+        <span class="desc">Coffee review with photo</span>
+      </div>
+      <div class="type-card" onclick="showForm('shop')">
+        <span class="emoji">&#128205;</span>
+        <span class="name">Shop Visit</span><br>
+        <span class="desc">A coffee shop you visited</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= VIDEO FORM ================= -->
+  <div class="panel hidden" id="form-video">
+    <h2>&#127909; New Video</h2>
+    <label>YouTube link</label>
+    <input type="url" id="v-url" placeholder="https://www.youtube.com/watch?v=...">
+    <label>Title</label>
+    <input type="text" id="v-title" placeholder="e.g. Reviewing Kenya AA Beans">
+    <label>Short description</label>
+    <textarea id="v-desc" placeholder="What's this video about?"></textarea>
+    <button class="btn btn-ghost" onclick="backToChooser()">Back</button>
+    <button class="btn" id="v-btn" onclick="publishVideo()">Publish Post</button>
+    <div id="v-msg"></div>
+  </div>
+
+  <!-- ================= REVIEW FORM ================= -->
+  <div class="panel hidden" id="form-review">
+    <h2>&#9749; New Review</h2>
+    <label>What are you reviewing?</label>
+    <input type="text" id="r-title" placeholder="e.g. Ethiopian Light Roast from Local Roasters">
+    <label>Rating</label>
+    <div class="star-picker" id="r-stars"></div>
+    <label>Your review</label>
+    <textarea id="r-text" placeholder="Flavor, aroma, would you buy it again?"></textarea>
+    <label>Photo (optional)</label>
+    <input type="file" id="r-photo" accept="image/*">
+    <button class="btn btn-ghost" onclick="backToChooser()">Back</button>
+    <button class="btn" id="r-btn" onclick="publishReview()">Publish Post</button>
+    <div id="r-msg"></div>
+  </div>
+
+  <!-- ================= SHOP FORM ================= -->
+  <div class="panel hidden" id="form-shop">
+    <h2>&#128205; New Shop Visit</h2>
+    <label>Shop name</label>
+    <input type="text" id="s-name" placeholder="e.g. Bean There Cafe">
+    <label>Location (city, state)</label>
+    <input type="text" id="s-loc" placeholder="e.g. Phoenix, AZ">
+    <label>Quick note (optional)</label>
+    <input type="text" id="s-note" placeholder="e.g. Great pour-over, cozy spot">
+    <button class="btn btn-ghost" onclick="backToChooser()">Back</button>
+    <button class="btn" id="s-btn" onclick="publishShop()">Publish Post</button>
+    <div id="s-msg"></div>
+  </div>
+
+  <!-- ================= SUCCESS ================= -->
+  <div class="panel hidden" id="done">
+    <h2>&#127881; Published!</h2>
+    <p>Your post is committed. The live site updates in about a minute.</p>
+    <button class="btn btn-ghost" onclick="backToChooser()">Post Another</button>
+    <a class="btn" href="index.html" style="text-decoration:none;">View the Blog</a>
+  </div>
+
+</main>
+
+<script>
+const OWNER = 'NumeNuke';
+const REPO  = 'numenuke.github.io';
+const API   = `https://api.github.com/repos/${OWNER}/${REPO}/contents/`;
+
+// ---------- helpers ----------
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const b64decode = b64 => new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\n/g,'')), c => c.charCodeAt(0)));
+const b64encode = str => { const b = new TextEncoder().encode(str); let s=''; b.forEach(c => s += String.fromCharCode(c)); return btoa(s); };
+const todayStr = () => new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+const token  = () => localStorage.getItem('cb_token') || '';
+const author = () => localStorage.getItem('cb_author') || '';
+
+function show(id) {
+  ['setup','chooser','form-video','form-review','form-shop','done'].forEach(p => $(p).classList.add('hidden'));
+  $(id).classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+function showSetup() { $('authorName').value = author(); show('setup'); }
+function backToChooser() { show('chooser'); }
+function showForm(t) { show('form-' + t); }
+function msg(id, text, cls) { $(id).innerHTML = `<div class="msg ${cls}">${text}</div>`; }
+
+function saveSetup() {
+  const t = $('tokenInput').value.trim();
+  if (!t) { msg('setupMsg', 'Please paste your token.', 'err'); return; }
+  localStorage.setItem('cb_token', t);
+  localStorage.setItem('cb_author', $('authorName').value.trim());
+  msg('setupMsg', 'Saved!', 'ok');
+  setTimeout(() => show('chooser'), 600);
+}
+
+// ---------- GitHub API ----------
+async function ghGet(path) {
+  const r = await fetch(API + path, { cache: 'no-store', headers: { 'Authorization': 'Bearer ' + token(), 'Accept': 'application/vnd.github+json' } });
+  if (!r.ok) throw new Error(r.status === 401 || r.status === 403 ? 'Token invalid or expired — open token settings and paste a new one.' : `GitHub error ${r.status}`);
+  return r.json();
+}
+async function ghPut(path, message, contentB64, sha) {
+  const body = { message, content: contentB64 };
+  if (sha) body.sha = sha;
+  const r = await fetch(API + path, {
+    method: 'PUT',
+    headers: { 'Authorization': 'Bearer ' + token(), 'Accept': 'application/vnd.github+json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error(r.status === 401 || r.status === 403 ? 'Token invalid or expired — open token settings and paste a new one.' : `GitHub error ${r.status}`);
+  return r.json();
+}
+
+async function insertSnippet(marker, snippet, commitMsg) {
+  const file = await ghGet('index.html');
+  const html = b64decode(file.content);
+  if (!html.includes(marker)) throw new Error('Could not find insert point in index.html');
+  const updated = html.replace(marker, () => marker + '\n' + snippet);
+  await ghPut('index.html', commitMsg, b64encode(updated), file.sha);
+}
+
+function dateLine() {
+  const a = author();
+  return esc(todayStr()) + (a ? ' &middot; ' + esc(a) : '');
+}
+
+// ---------- publish: video ----------
+function videoId(url) {
+  const m = url.match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([\w-]{11})/);
+  return m ? m[1] : null;
+}
+async function publishVideo() {
+  const id = videoId($('v-url').value.trim());
+  const title = $('v-title').value.trim();
+  if (!id) { msg('v-msg', "That doesn't look like a YouTube link.", 'err'); return; }
+  if (!title) { msg('v-msg', 'Please add a title.', 'err'); return; }
+  const snippet = `
+      <article class="card">
+        <div class="video-frame">
+          <iframe src="https://www.youtube.com/embed/${id}" title="${esc(title)}" allowfullscreen></iframe>
+        </div>
+        <div class="card-body">
+          <div class="date">${dateLine()}</div>
+          <h3>${esc(title)}</h3>
+          <p>${esc($('v-desc').value.trim())}</p>
+        </div>
+      </article>`;
+  await publish('v', '<!-- POSTS:VIDEOS -->', snippet, 'New video: ' + title);
+}
+
+// ---------- publish: review ----------
+let starVal = 4;
+function renderStars() {
+  $('r-stars').innerHTML = [1,2,3,4,5].map(i =>
+    `<span class="${i <= starVal ? 'on' : ''}" onclick="starVal=${i};renderStars()">${i <= starVal ? '★' : '☆'}</span>`).join('');
+}
+async function publishReview() {
+  const title = $('r-title').value.trim();
+  const text = $('r-text').value.trim();
+  if (!title || !text) { msg('r-msg', 'Please fill in the title and review.', 'err'); return; }
+  const btn = $('r-btn'); btn.disabled = true;
+  try {
+    let imgTag = '';
+    const f = $('r-photo').files[0];
+    if (f) {
+      if (f.size > 4 * 1024 * 1024) throw new Error('Photo is over 4 MB — please use a smaller image.');
+      msg('r-msg', 'Uploading photo…', 'ok');
+      const buf = new Uint8Array(await f.arrayBuffer());
+      let s = ''; buf.forEach(c => s += String.fromCharCode(c));
+      const safe = f.name.replace(/[^\w.-]/g, '_');
+      const path = `photos/${Date.now()}_${safe}`;
+      await ghPut(path, 'Photo: ' + safe, btoa(s));
+      imgTag = `<img src="${path}" alt="${esc(title)} photo">\n        `;
+    }
+    const stars = '★'.repeat(starVal) + '☆'.repeat(5 - starVal);
+    const snippet = `
+      <article class="card review">
+        ${imgTag}<div class="card-body">
+          <div class="date">${dateLine()}</div>
+          <div class="stars">${stars}</div>
+          <h3>${esc(title)}</h3>
+          <p>${esc(text)}</p>
+        </div>
+      </article>`;
+    msg('r-msg', 'Publishing…', 'ok');
+    await insertSnippet('<!-- POSTS:REVIEWS -->', snippet, 'New review: ' + title);
+    show('done');
+  } catch (e) { msg('r-msg', e.message, 'err'); }
+  btn.disabled = false;
+}
+
+// ---------- publish: shop ----------
+async function publishShop() {
+  const name = $('s-name').value.trim();
+  const loc = $('s-loc').value.trim();
+  if (!name || !loc) { msg('s-msg', 'Please fill in the shop name and location.', 'err'); return; }
+  const note = $('s-note').value.trim();
+  const mapQ = encodeURIComponent(name + ' ' + loc);
+  const snippet = `
+      <div class="shop">
+        <span class="shop-name">${esc(name)}</span>
+        <span class="shop-location">${esc(loc)}</span>
+        <a class="map-link" href="https://www.google.com/maps/search/${mapQ}" target="_blank">Map</a>
+        <span class="shop-date">${dateLine()}</span>${note ? `
+        <span class="shop-note">${esc(note)}</span>` : ''}
+      </div>`;
+  await publish('s', '<!-- POSTS:SHOPS -->', snippet, 'Shop visit: ' + name);
+}
+
+// ---------- shared publish wrapper (video & shop) ----------
+async function publish(prefix, marker, snippet, commitMsg) {
+  const btn = $(prefix + '-btn'); btn.disabled = true;
+  msg(prefix + '-msg', 'Publishing…', 'ok');
+  try {
+    await insertSnippet(marker, snippet, commitMsg);
+    show('done');
+    $(prefix + '-msg').innerHTML = '';
+  } catch (e) { msg(prefix + '-msg', e.message, 'err'); }
+  btn.disabled = false;
+}
+
+// ---------- init ----------
+renderStars();
+show(token() ? 'chooser' : 'setup');
+</script>
+
+</body>
+</html>
