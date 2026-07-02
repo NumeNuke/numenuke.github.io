@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doug's Coffee Discovery</title>
+<style>
+  /* ============================================
+     COLOR THEME — brown / orange / black
+     Change these once to re-theme the whole site
+     ============================================ */
+  :root {
+    --black: #171210;
+    --dark-brown: #2b1d15;
+    --brown: #4a3226;
+    --light-brown: #8a6a52;
+    --cream: #f3e7d9;
+    --orange: #e87b26;
+    --orange-bright: #ff9c3f;
+    --tan: #d9c3a5; /* light brown page background */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--tan);
+    color: var(--cream);
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.6;
+  }
+
+  a { color: var(--orange-bright); }
+
+  /* ---------- Header ---------- */
+  header {
+    background: linear-gradient(180deg, var(--dark-brown), var(--black));
+    border-bottom: 3px solid var(--orange);
+    padding: 48px 20px 36px;
+    text-align: center;
+  }
+  header h1 {
+    font-size: 2.6rem;
+    color: var(--orange-bright);
+    letter-spacing: 1px;
+  }
+  header h1 .cup { font-size: 2.2rem; }
+  header p.tagline {
+    color: var(--cream);
+    opacity: 0.85;
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .yt-button {
+    display: inline-block;
+    margin-top: 18px;
+    background: var(--orange);
+    color: var(--black);
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 10px 22px;
+    border-radius: 24px;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .yt-button:hover { background: var(--orange-bright); transform: translateY(-2px); }
+
+  /* ---------- Nav ---------- */
+  nav {
+    background: var(--dark-brown);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    border-bottom: 1px solid var(--brown);
+  }
+  nav a {
+    color: var(--cream);
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 0.95rem;
+    padding: 6px 16px;
+    border-radius: 18px;
+    transition: background 0.2s, color 0.2s;
+  }
+  nav a:hover { background: var(--orange); color: var(--black); }
+
+  /* ---------- Sections ---------- */
+  main { max-width: 1050px; margin: 0 auto; padding: 20px; }
+  section { padding: 48px 0; border-bottom: 1px solid var(--brown); }
+  section:last-of-type { border-bottom: none; }
+  h2 {
+    color: var(--dark-brown);
+    font-size: 1.9rem;
+    margin-bottom: 6px;
+  }
+  .section-sub {
+    color: var(--brown);
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  /* ---------- Video cards ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .card {
+    background: var(--dark-brown);
+    border: 1px solid var(--brown);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .card:hover { transform: translateY(-4px); border-color: var(--orange); }
+  .card .video-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--black);
+  }
+  .card .video-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .card-body { padding: 16px 18px 20px; }
+  .card-body h3 { color: var(--orange-bright); font-size: 1.15rem; margin-bottom: 6px; }
+  .card-body .date {
+    font-family: Arial, sans-serif;
+    font-size: 0.78rem;
+    color: var(--light-brown);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .card-body p { font-size: 0.95rem; opacity: 0.9; }
+
+  /* ---------- Review cards ---------- */
+  .review { display: flex; flex-direction: column; }
+  .review img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+    background: var(--black);
+  }
+  .stars { color: var(--orange-bright); font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 8px; }
+
+  /* ---------- Coffee shops visited ---------- */
+  .shop-list { display: flex; flex-direction: column; gap: 14px; }
+  .shop {
+    background: var(--dark-brown);
+    border: 1px solid var(--brown);
+    border-left: 4px solid var(--orange);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 14px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .shop:hover { transform: translateX(4px); border-color: var(--orange-bright); }
+  .shop .shop-name {
+    color: var(--orange-bright);
+    font-size: 1.15rem;
+    font-weight: bold;
+  }
+  .shop .shop-location {
+    color: var(--cream);
+    opacity: 0.85;
+  }
+  .shop .shop-location::before {
+    content: "\1F4CD ";
+  }
+  .shop .shop-date {
+    font-family: Arial, sans-serif;
+    font-size: 0.78rem;
+    color: var(--light-brown);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-left: auto;
+  }
+  .shop .shop-note {
+    flex-basis: 100%;
+    font-size: 0.95rem;
+    opacity: 0.9;
+    margin-top: 2px;
+  }
+  .shop a.map-link {
+    font-family: Arial, sans-serif;
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+  .shop a.map-link:hover { text-decoration: underline; }
+
+  /* ---------- About ---------- */
+  .about-box {
+    background: var(--dark-brown);
+    border-left: 4px solid var(--orange);
+    border-radius: 0 10px 10px 0;
+    padding: 26px 30px;
+    max-width: 720px;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    background: var(--dark-brown);
+    border-top: 3px solid var(--orange);
+    text-align: center;
+    padding: 26px 20px;
+    font-family: Arial, sans-serif;
+    font-size: 0.85rem;
+    color: var(--light-brown);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1><span class="cup">&#9749;</span> Doug's Coffee Discovery</h1>
+  <p class="tagline">Exploring the world, one cup at a time</p>
+  <!-- Replace # below with your YouTube channel URL, e.g. https://www.youtube.com/@dougscoffeediscovery -->
+  <a class="yt-button" href="#" target="_blank">&#9654; Subscribe on YouTube</a>
+</header>
+
+<nav>
+  <a href="#videos">Videos</a>
+  <a href="#reviews">Reviews</a>
+  <a href="#shops">Shops Visited</a>
+  <a href="#about">About</a>
+</nav>
+
+<main>
+
+  <!-- ============================================================
+       VIDEOS SECTION
+       To add a new video: copy one whole <article class="card"> block,
+       paste it at the TOP of the grid, and change:
+         1. VIDEO_ID in the iframe src (the part after watch?v= in a
+            YouTube link, e.g. youtube.com/watch?v=dQw4w9WgXcQ -> dQw4w9WgXcQ)
+         2. The title, date, and description
+       ============================================================ -->
+  <section id="videos">
+    <h2>Latest Videos</h2>
+    <p class="section-sub">Fresh brews from the channel</p>
+    <div class="grid">
+
+      <article class="card">
+        <div class="video-frame">
+          <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Video title" allowfullscreen></iframe>
+        </div>
+        <div class="card-body">
+          <div class="date">July 2, 2026</div>
+          <h3>My First Video Title Here</h3>
+          <p>A short description of what this video covers.</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="video-frame">
+          <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Video title" allowfullscreen></iframe>
+        </div>
+        <div class="card-body">
+          <div class="date">June 25, 2026</div>
+          <h3>Another Video Title</h3>
+          <p>A short description of what this video covers.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       REVIEWS SECTION
+       To add a new review: copy one whole <article class="card review">
+       block, paste it at the TOP of the grid, and change:
+         1. The img src — put your photo (e.g. photos/kenya-beans.jpg)
+            in the same folder as this file and reference it here
+         2. Stars: use &#9733; (filled) and &#9734; (empty), 5 total
+         3. The title, date, and review text
+       ============================================================ -->
+  <section id="reviews">
+    <h2>Coffee Reviews</h2>
+    <p class="section-sub">Beans, roasts, and cafes — rated honestly</p>
+    <div class="grid">
+
+      <article class="card review">
+        <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=600&q=70" alt="Coffee beans review photo">
+        <div class="card-body">
+          <div class="date">July 1, 2026</div>
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+          <h3>Sample Review: Ethiopian Light Roast</h3>
+          <p>Replace this text with your review. Notes on flavor, aroma, body, and whether you'd buy it again.</p>
+        </div>
+      </article>
+
+      <article class="card review">
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=70" alt="Latte review photo">
+        <div class="card-body">
+          <div class="date">June 20, 2026</div>
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <h3>Sample Review: Local Cafe Latte</h3>
+          <p>Replace this text with your review. Swap the image above for your own photo.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SHOPS VISITED SECTION
+       To add a shop: copy one whole <div class="shop"> block, paste
+       it at the TOP of the list, and change:
+         1. shop-name  — the coffee shop's name
+         2. shop-location — city, state (or neighborhood)
+         3. shop-date — when you visited
+         4. shop-note — optional one-liner; delete the line if unwanted
+         5. map-link — optional Google Maps link; delete if unwanted
+       ============================================================ -->
+  <section id="shops">
+    <h2>Shops Visited</h2>
+    <p class="section-sub">Every stop on the coffee trail</p>
+    <div class="shop-list">
+
+      <div class="shop">
+        <span class="shop-name">Sample Coffee Roasters</span>
+        <span class="shop-location">Phoenix, AZ</span>
+        <a class="map-link" href="https://www.google.com/maps/search/Sample+Coffee+Roasters+Phoenix+AZ" target="_blank">Map</a>
+        <span class="shop-date">July 1, 2026</span>
+        <span class="shop-note">Great pour-over, cozy spot. Replace with your own note.</span>
+      </div>
+
+      <div class="shop">
+        <span class="shop-name">Another Cafe</span>
+        <span class="shop-location">Tucson, AZ</span>
+        <a class="map-link" href="https://www.google.com/maps/search/Another+Cafe+Tucson+AZ" target="_blank">Map</a>
+        <span class="shop-date">June 15, 2026</span>
+        <span class="shop-note">Strong espresso, friendly staff. Replace with your own note.</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ABOUT SECTION — edit the text below
+       ============================================================ -->
+  <section id="about">
+    <h2>About</h2>
+    <p class="section-sub">The person behind the pour</p>
+    <div class="about-box">
+      <p>Hey, I'm Doug. I make videos about coffee — brewing methods, bean reviews, gear, and cafe visits. This blog is where the videos and written reviews live side by side. Grab a cup and look around.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>&copy; 2026 Doug's Coffee Discovery &middot; <a href="#" target="_blank">YouTube</a></p>
+</footer>
+
+</body>
+</html>
